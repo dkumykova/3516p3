@@ -1,18 +1,46 @@
 #include <stdio.h>
 #include "project3.h"
+#include <stdlib.h>
 
 extern int TraceLevel;
+#define ME 3
 
 struct distance_table {
   int costs[MAX_NODES][MAX_NODES];
 };
-struct distance_table dt3;
+struct distance_table *dt3;
 struct NeighborCosts   *neighbor3;
 
 /* students to write the following two routines, and maybe some others */
 
 void rtinit3() {
+    dt3 = (struct distance_table *) malloc(sizeof(struct distance_table));
+    neighbor3 = (struct NeighborCosts *) malloc(sizeof(struct NeighborCosts));
+    //initilaize distance table to all infinity (unknown)
+    int j;
+    int k;
+    for(j = 0; j < MAX_NODES; j++){
+        for(k = 0; k < MAX_NODES; k++){
+            dt3->costs[j][k] = INFINITY;
+        }
+    }
 
+    // //get costs of neighbors so they they can be processed
+    neighbor3 = getNeighborCosts(ME);
+    int p;
+    for(p = 0; p < MAX_NODES; p++){
+        printf("Node3 info : %d\n", neighbor3->NodeCosts[p]);
+    }
+
+    int i;
+    //int f;
+    //for each node cost in neighbor0, put it in the correct location in node0's
+    //distance table: 0, 
+    //for 0, want to fill in (0, 0), (1, 1), (2, 2), (3, 3)
+    for(i = 0; i < MAX_NODES; i++){
+        dt3->costs[i][i] = neighbor3->NodeCosts[i];
+    }
+    printdt0(ME, neighbor3, dt3);
 }
 
 
