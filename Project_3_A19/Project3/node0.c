@@ -9,14 +9,21 @@ struct distance_table {
   int costs[MAX_NODES][MAX_NODES];
 };
 struct distance_table *dt0;
-struct NeighborCosts   *neighbor0;
+struct NeighborCosts *neighbor0;
 void printdt0( int MyNodeNumber, struct NeighborCosts *neighbor, struct distance_table *dtptr);
+int minCosts[4];
+struct RoutePacket *previous;
+struct RoutePacket *current; 
+
+
 
 /* students to write the following two routines, and maybe some others */
 
 void rtinit0() {
     dt0 = (struct distance_table *) malloc(sizeof(struct distance_table));
     neighbor0 = (struct NeighborCosts *) malloc(sizeof(struct NeighborCosts));
+    previous = (struct RoutePacket*) malloc(sizeof(struct RoutePacket));
+    current = (struct RoutePacket*) malloc(sizeof(struct RoutePacket));
     //initilaize distance table to all infinity (unknown)
     int j;
     int k;
@@ -38,15 +45,71 @@ void rtinit0() {
     //for each node cost in neighbor0, put it in the correct location in node0's
     //distance table: 0, 
     //for 0, want to fill in (0, 0), (1, 1), (2, 2), (3, 3)
+    //also fill in the mincosts!
     for(i = 0; i < MAX_NODES; i++){
         dt0->costs[i][i] = neighbor0->NodeCosts[i];
+        minCosts[i] = neighbor0->NodeCosts[i];
     }
     printdt0(ME, neighbor0, dt0);
+    //send information to neighbor nodes; call layer2 for each neighbor
+    //neighbors of node 0: 1 2 3
+
+    //get mincosts and place in each packet
+    
+    struct RoutePacket *packet = (struct RoutePacket *) malloc(sizeof(struct RoutePacket));
+    packet->sourceid = ME;
+    
+    packet->destid = 1;
+    int m;
+    printf("mincosts calc'd for node0: ");
+    for(m= 0; m < 4; m++){
+        printf("%d, ", minCosts[m]);
+        packet->mincost[m] = minCosts[m];
+    }
+    printf("\n");
+    toLayer2(*packet);
+    packet->destid = 2;
+    toLayer2(*packet);
+    packet->destid = 3;
+    toLayer2(*packet);
+    //after initializing table, send to distance tables to neighbors in form of update packet
 }
 
 
 void rtupdate0( struct RoutePacket *rcvdpkt ) {
+    printf("Node 0 received a new packet!\n");
 
+    //print out values of the new mincosts
+    //copt received packet to current to be processed
+    current->sourceid = rcvdpkt->sourceid;
+    current->destid = rcvdpkt->destid;
+    printf("neigbor %d mincosts: ", rcvdpkt->sourceid);
+    int i;
+    for(i = 0; i < 4; i++){
+        printf("%d, ", rcvdpkt->mincost[i]);
+        current->mincost[i] = rcvdpkt->mincost[i];
+        //if any of these are different, then need to re calculate shortest path to each node
+        if(rcvdpkt->mincost[i] != previous->mincost[i]){
+            //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
+            
+        }
+    }
+    printf("\n");
+
+    //check if the distance is different to what is expected; if so, recalculate mincosts
+
+    //at the end of all processing, make current the previous one
+
+    previous->sourceid = current->sourceid;
+    previous->destid = current->destid;
+    int k;
+    for (k = 0; k < 4; k++)
+    {
+        previous->mincost[k] = current->mincost[k];
+    }
+    
+
+    
 }
 
 

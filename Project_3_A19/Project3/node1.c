@@ -9,6 +9,7 @@ struct distance_table {
 };
 struct distance_table *dt1;
 struct NeighborCosts   *neighbor1;
+int minCosts[4];
 
 /* students to write the following two routines, and maybe some others */
 
@@ -38,13 +39,41 @@ void rtinit1() {
     //for 0, want to fill in (0, 0), (1, 1), (2, 2), (3, 3)
     for(i = 0; i < MAX_NODES; i++){
         dt1->costs[i][i] = neighbor1->NodeCosts[i];
+        minCosts[i] = neighbor1->NodeCosts[i];
     }
     printdt0(ME, neighbor1, dt1);
+
+    //send information to neighbor nodes; call layer2 for each neighbor
+    //neighbors of node 1: 0 2
+
+    //get mincosts and place in each packet
+    
+    struct RoutePacket *packet = (struct RoutePacket *) malloc(sizeof(struct RoutePacket));
+    packet->sourceid = ME;
+    packet->destid = 0;
+    int m;
+    printf("mincosts calc'd for node1: ");
+    for(m= 0; m < 4; m++){
+        printf("%d, ", minCosts[m]);
+        packet->mincost[m] = minCosts[m];
+    }
+    printf("\n");
+    toLayer2(*packet);
+    packet->destid = 2;
+    toLayer2(*packet);
 }
 
 
 void rtupdate1( struct RoutePacket *rcvdpkt ) {
+    printf("Node 1 received a new packet!\n");
 
+    //print out calues of the new mincosts
+    printf("neigbor %d mincosts: ", rcvdpkt->sourceid);
+    int i;
+    for(i = 0; i < 4; i++){
+        printf("%d, ", rcvdpkt->mincost[i]);
+    }
+    printf("\n");
 }
 
 
