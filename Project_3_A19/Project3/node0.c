@@ -77,24 +77,31 @@ void rtinit0() {
 
 
 void rtupdate0( struct RoutePacket *rcvdpkt ) {
+    //format of mincosts is, based on source, to node 0,1,2,3
     printf("Node 0 received a new packet!\n");
 
     //print out values of the new mincosts
-    //copt received packet to current to be processed
+    //copy received packet to current to be processed
+    //udpdate the node distance table to reflect info; by the end of the session, each node should have the 
+    //same distance table with minimized costs, but they won't be printed the same which is annoying
+
     current->sourceid = rcvdpkt->sourceid;
     current->destid = rcvdpkt->destid;
-    printf("neigbor %d mincosts: ", rcvdpkt->sourceid);
+    printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
     int i;
     for(i = 0; i < 4; i++){
         printf("%d, ", rcvdpkt->mincost[i]);
         current->mincost[i] = rcvdpkt->mincost[i];
+        dt0->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
         //if any of these are different, then need to re calculate shortest path to each node
         if(rcvdpkt->mincost[i] != previous->mincost[i]){
             //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
-            
+
         }
     }
     printf("\n");
+
+
 
     //check if the distance is different to what is expected; if so, recalculate mincosts
 
@@ -107,6 +114,9 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
     {
         previous->mincost[k] = current->mincost[k];
     }
+
+    printf("Reprinting node 0 distance table post update:\n");
+    printdt0(ME, neighbor0, dt0);
     
 
     
