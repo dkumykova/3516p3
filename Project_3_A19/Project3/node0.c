@@ -94,7 +94,9 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
         current->mincost[i] = rcvdpkt->mincost[i];
         dt0->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
         //if any of these are different, then need to re calculate shortest path to each node
-        if(rcvdpkt->mincost[i] != previous->mincost[i]){
+        //change the neighborCosts, not the distance table!
+        if(current->mincost[i] != previous->mincost[i]){
+            printf("New neighbor cost found\n");
             //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
 
         }
