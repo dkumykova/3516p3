@@ -33,9 +33,11 @@ void rtinit3() {
     // //get costs of neighbors so they they can be processed
     neighbor3 = getNeighborCosts(ME);
     int p;
+    printf("At time %f, rtinit3 called\nNode3 neighbor info:", getClockTime());
     for(p = 0; p < MAX_NODES; p++){
-        printf("Node3 info : %d\n", neighbor3->NodeCosts[p]);
+        printf("%d, ", neighbor3->NodeCosts[p]);
     }
+    printf("\n");
 
     int i;
     //int f;
@@ -57,14 +59,17 @@ void rtinit3() {
     packet->sourceid = ME;
     packet->destid = 0;
     int m;
-    printf("mincosts calc'd for node3: ");
+    //printf("mincosts calc'd for node3: ");
     for(m= 0; m < 4; m++){
-        printf("%d, ", minCosts[m]);
+      //  printf("%d, ", minCosts[m]);
         packet->mincost[m] = minCosts[m];
     }
-    printf("\n");
+    printf("At time %f, node 3 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
     toLayer2(*packet);
     packet->destid = 2;
+    printf("At time %f, node 3 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
     toLayer2(*packet);
 }
 

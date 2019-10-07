@@ -41,3 +41,4 @@ struct RoutePacket {
 // Prototype so all nodes can see the routine in project3.c
 void                  toLayer2( struct RoutePacket packet );
 struct NeighborCosts *getNeighborCosts(int myNodeNumber);
+float getClockTime();

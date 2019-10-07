@@ -457,3 +457,6 @@ void   toLayer2( struct RoutePacket packet ) {
     insertevent(evptr);
 }     // End of toLayer2
 
+float getClockTime(){
+    return clocktime;
+}

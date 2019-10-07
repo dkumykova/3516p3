@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "project3.h"
 #include <stdlib.h>
+#include <time.h>
 
 extern int TraceLevel;
 #define ME 0
@@ -36,9 +37,12 @@ void rtinit0() {
     // //get costs of neighbors so they they can be processed
     neighbor0 = getNeighborCosts(ME);
     int p;
+    //float time = getClockTime();
+    printf("At time %f, rtinit0 called\nNode0 neighbor info:", getClockTime());
     for(p = 0; p < MAX_NODES; p++){
-        printf("Node0 info: %d\n", neighbor0->NodeCosts[p]);
+        printf("%d, ", neighbor0->NodeCosts[p]);
     }
+    printf("\n");
 
     int i;
     //int f;
@@ -61,16 +65,21 @@ void rtinit0() {
     
     packet->destid = 1;
     int m;
-    printf("mincosts calc'd for node0: ");
+    //printf("mincosts calc'd for node0: ");
     for(m= 0; m < 4; m++){
-        printf("%d, ", minCosts[m]);
+        //printf("%d, ", minCosts[m]);
         packet->mincost[m] = minCosts[m];
     }
-    printf("\n");
+    printf("At time %f, node 0 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor0->NodeCosts[0], neighbor0->NodeCosts[1], neighbor0->NodeCosts[2], neighbor0->NodeCosts[3]);
     toLayer2(*packet);
     packet->destid = 2;
+    printf("At time %f, node 0 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor0->NodeCosts[0], neighbor0->NodeCosts[1], neighbor0->NodeCosts[2], neighbor0->NodeCosts[3]);
     toLayer2(*packet);
     packet->destid = 3;
+    printf("At time %f, node 0 sends packet to node 3 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor0->NodeCosts[0], neighbor0->NodeCosts[1], neighbor0->NodeCosts[2], neighbor0->NodeCosts[3]);
     toLayer2(*packet);
     //after initializing table, send to distance tables to neighbors in form of update packet
 }
