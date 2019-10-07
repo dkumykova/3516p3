@@ -98,9 +98,11 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
     current->destid = rcvdpkt->destid;
     printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
     int i;
+
     int currentCost = 0;
     int bestCost = 0;
     int nodesVisited[4];
+
     for(i = 0; i < 4; i++){
         printf("%d, ", rcvdpkt->mincost[i]);
         current->mincost[i] = rcvdpkt->mincost[i];
@@ -110,6 +112,8 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
         if(current->mincost[i] != previous->mincost[i]){
             printf("New neighbor cost found\n");
             //calculate shortest path for each neighbor, so for node 0:
+            //find new mincost for neighbor i!
+            
             /**
              * NO LOOPS! need to keep track of nodes visited
              * keep track of current cost and previous best cost; if

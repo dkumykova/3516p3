@@ -29,3 +29,14 @@ of the values are smaller than what node 0 has, it replaces those values with th
     -once it updates the distance table, it needs to recalculate its own neighborCosts --> algorithm
     Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
     neighborCost(base 0, to 2) = min {C(0,2)} = min{(C(0,2), C(0,1) + C(1,2), C(0, 3) + C(3, 2))}
+
+Algorithm:
+
+For source A to destination B, get minCost (A, B):
+1. get neighbors of A.
+2. get minCost of neighbor 1 of A. Add to totalCost
+    a. if neighbor 1 = destination and totalCost < bestCost, store as new bestCost.
+        else, bestCost stays the same.
+    b. repeat for all neighbors of A.
+    c. output the minCost from A to B.
+    
