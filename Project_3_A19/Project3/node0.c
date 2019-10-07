@@ -98,6 +98,9 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
     current->destid = rcvdpkt->destid;
     printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
     int i;
+    int currentCost = 0;
+    int bestCost = 0;
+    int nodesVisited[4];
     for(i = 0; i < 4; i++){
         printf("%d, ", rcvdpkt->mincost[i]);
         current->mincost[i] = rcvdpkt->mincost[i];
@@ -106,6 +109,24 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
         //change the neighborCosts, not the distance table!
         if(current->mincost[i] != previous->mincost[i]){
             printf("New neighbor cost found\n");
+            //calculate shortest path for each neighbor, so for node 0:
+            /**
+             * NO LOOPS! need to keep track of nodes visited
+             * keep track of current cost and previous best cost; if
+             * route starts having a route greater than previous cost, drop that route
+             * Dest: 1
+             * 0-->1
+             * 0-->2-->1
+             * 0-->3-->2-->1
+             * Dest: 2
+             * 0-->2
+             * 0-->1-->2
+             * 0-->3-->2
+             * Dest: 3
+             * 0-->3
+             * 0-->1-->2-->3
+             * 0-->2-->3
+             * */
             //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
 
         }
