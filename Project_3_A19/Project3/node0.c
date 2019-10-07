@@ -101,8 +101,6 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
     }
     printf("\n");
 
-
-
     //check if the distance is different to what is expected; if so, recalculate mincosts
 
     //at the end of all processing, make current the previous one
@@ -118,7 +116,6 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
     printf("Reprinting node 0 distance table post update:\n");
     printdt0(ME, neighbor0, dt0);
     
-
     
 }
 

@@ -11,12 +11,16 @@ struct distance_table {
 struct distance_table *dt2;
 struct NeighborCosts   *neighbor2;
 int minCosts[4];
+struct RoutePacket *previous;
+struct RoutePacket *current; 
 
 /* students to write the following two routines, and maybe some others */
 
 void rtinit2() {
     dt2 = (struct distance_table *) malloc(sizeof(struct distance_table));
     neighbor2 = (struct NeighborCosts *) malloc(sizeof(struct NeighborCosts));
+    previous = (struct RoutePacket*) malloc(sizeof(struct RoutePacket));
+    current = (struct RoutePacket*) malloc(sizeof(struct RoutePacket));
     //initilaize distance table to all infinity (unknown)
     int j;
     int k;
@@ -70,13 +74,36 @@ void rtinit2() {
 void rtupdate2( struct RoutePacket *rcvdpkt ) {
     printf("Node 2 received a new packet!\n");
 
-    //print out calues of the new mincosts
-    printf("neigbor %d mincosts: ", rcvdpkt->sourceid);
+    current->sourceid = rcvdpkt->sourceid;
+    current->destid = rcvdpkt->destid;
+    printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
     int i;
     for(i = 0; i < 4; i++){
         printf("%d, ", rcvdpkt->mincost[i]);
+        current->mincost[i] = rcvdpkt->mincost[i];
+        dt2->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+        //if any of these are different, then need to re calculate shortest path to each node
+        if(rcvdpkt->mincost[i] != previous->mincost[i]){
+            //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
+
+        }
     }
     printf("\n");
+
+    //check if the distance is different to what is expected; if so, recalculate mincosts
+
+    //at the end of all processing, make current the previous one
+
+    previous->sourceid = current->sourceid;
+    previous->destid = current->destid;
+    int k;
+    for (k = 0; k < 4; k++)
+    {
+        previous->mincost[k] = current->mincost[k];
+    }
+
+    printf("Reprinting node 2 distance table post update:\n");
+    printdt0(ME, neighbor2, dt2);
 
 }
 
