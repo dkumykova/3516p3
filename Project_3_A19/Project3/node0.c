@@ -115,9 +115,18 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
             //find new mincost for neighbor i!
             
             /**
+             * 
+             * For source A to destination B, get minCost (A, B):
+                1. get neighbors of A.
+                2. get minCost of neighbor 1 of A. Add to totalCost
+                    a. if neighbor 1 = destination and totalCost < bestCost, store as new bestCost.
+                        else, bestCost stays the same.
+                    b. repeat for all neighbors of A.
+                    c. output the minCost from A to B.
              * NO LOOPS! need to keep track of nodes visited
              * keep track of current cost and previous best cost; if
              * route starts having a route greater than previous cost, drop that route
+             * 
              * Dest: 1
              * 0-->1
              * 0-->2-->1
@@ -133,6 +142,14 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
              * */
             //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
 
+        }
+
+        if(dt0->costs[rcvdpkt->sourceid][i] != rcvdpkt->mincost[i]){
+            printf("mincost of neigbor %d to their neighbor %d changed\n", rcvdpkt->sourceid, i);
+            //recalculate all paths?
+            findShortestPath(ME, 1);
+            findShortestPath(ME, 2);
+            findShortestPath(ME, 3);
         }
     }
     printf("\n");
@@ -206,4 +223,28 @@ void printdt0( int MyNodeNumber, struct NeighborCosts *neighbor,
     }
     printf("\n");
 }    // End of printdt0
+
+void findShortestPath(int source, int dest){
+    //given the source and destination nodes, find shortest path between by getting their neighbor costs. 
+    //update node 0 neighbor costs and distance table with new info
+
+    //ex. node 0
+    int bestCost = 9999;
+    int i;
+    for(i = 0; i < MAX_NODES; i++){
+
+        //for the destination node
+        if(i == dest){
+            //if the nodeCost currently stored in this node is less than previous best, store
+            if(neighbor0->NodeCosts[i] < bestCost){
+                bestCost = neighbor0->NodeCosts[i];
+            }
+
+        } else { //keep iterating over neighbors in all directions until get to dest node
+
+        }
+        
+    }
+
+}
 
