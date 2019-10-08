@@ -45,8 +45,8 @@ void rtinit3() {
     //distance table: 0, 
     //for 0, want to fill in (0, 0), (1, 1), (2, 2), (3, 3)
     for(i = 0; i < MAX_NODES; i++){
-        dt3->costs[i][i] = neighbor3->NodeCosts[i];
-        minCosts[i] = neighbor3->NodeCosts[i];
+        dt3->costs[ME][i] = neighbor3->NodeCosts[i];
+        //minCosts[i] = neighbor3->NodeCosts[i];
     }
     printdt0(ME, neighbor3, dt3);
 
@@ -62,7 +62,7 @@ void rtinit3() {
     //printf("mincosts calc'd for node3: ");
     for(m= 0; m < 4; m++){
       //  printf("%d, ", minCosts[m]);
-        packet->mincost[m] = minCosts[m];
+        packet->mincost[m] = neighbor3->NodeCosts[m];
     }
     printf("At time %f, node 3 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
     neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);

@@ -15,6 +15,7 @@ void printdt0( int MyNodeNumber, struct NeighborCosts *neighbor, struct distance
 int minCosts[4];
 struct RoutePacket *previous;
 struct RoutePacket *current; 
+void findShortestPath(int source, int dest);
 
 
 
@@ -51,8 +52,8 @@ void rtinit0() {
     //for 0, want to fill in (0, 0), (1, 1), (2, 2), (3, 3)
     //also fill in the mincosts!
     for(i = 0; i < MAX_NODES; i++){
-        dt0->costs[i][i] = neighbor0->NodeCosts[i];
-        minCosts[i] = neighbor0->NodeCosts[i];
+        dt0->costs[ME][i] = neighbor0->NodeCosts[i];
+        //minCosts[i] = neighbor0->NodeCosts[i];
     }
     printdt0(ME, neighbor0, dt0);
     //send information to neighbor nodes; call layer2 for each neighbor
@@ -68,7 +69,7 @@ void rtinit0() {
     //printf("mincosts calc'd for node0: ");
     for(m= 0; m < 4; m++){
         //printf("%d, ", minCosts[m]);
-        packet->mincost[m] = minCosts[m];
+        packet->mincost[m] = neighbor0->NodeCosts[m];
     }
     printf("At time %f, node 0 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
     neighbor0->NodeCosts[0], neighbor0->NodeCosts[1], neighbor0->NodeCosts[2], neighbor0->NodeCosts[3]);
@@ -224,27 +225,36 @@ void printdt0( int MyNodeNumber, struct NeighborCosts *neighbor,
     printf("\n");
 }    // End of printdt0
 
-void findShortestPath(int source, int dest){
+void findShortestPath(struct RoutePacket *packet){
     //given the source and destination nodes, find shortest path between by getting their neighbor costs. 
     //update node 0 neighbor costs and distance table with new info
 
+    //this is based entirely off of the distance table!!!
     //ex. node 0
     int bestCost = 9999;
-    int i;
+    int cost = 0;
+    int i, j, k, m, n;
+
+    //starting at node 0
+    //distance to node 0's neighbors find
     for(i = 0; i < MAX_NODES; i++){
-
-        //for the destination node
-        if(i == dest){
-            //if the nodeCost currently stored in this node is less than previous best, store
-            if(neighbor0->NodeCosts[i] < bestCost){
-                bestCost = neighbor0->NodeCosts[i];
+        // if(i == ME){
+        //     dt0->costs[ME][i] = neighbor0->NodeCosts[i];
+        // } else{
+        if(i == packet->sourceid){
+            for(j = 0; j < MAX_NODES; j++){
+                dt0->costs[i][j] = packet->mincost[j];
             }
-
-        } else { //keep iterating over neighbors in all directions until get to dest node
-
         }
+    }
+//^this just fills in the dt0
+
+    for(k = 0; k < MAX_NODES; k++){
         
     }
+
+        
+    
 
 }
 
