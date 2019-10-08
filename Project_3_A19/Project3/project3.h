@@ -30,6 +30,10 @@ struct RoutePacket {
    int mincost[MAX_NODES];     // min cost from node 0 ... N 
 };
 
+struct distance_table {
+  int costs[MAX_NODES][MAX_NODES];
+};
+
 #define   YES           1
 #define   NO            0
 #define   INFINITY   9999
@@ -39,6 +43,7 @@ struct RoutePacket {
 
 
 // Prototype so all nodes can see the routine in project3.c
-void                  toLayer2( struct RoutePacket packet );
+void toLayer2( struct RoutePacket packet );
 struct NeighborCosts *getNeighborCosts(int myNodeNumber);
 float getClockTime();
+void findShortestPath(struct distance_table *dt, struct NeighborCosts *neighbors, struct RoutePacket *packet);

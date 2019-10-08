@@ -5,9 +5,9 @@
 extern int TraceLevel;
 #define ME 2
 
-struct distance_table {
-  int costs[MAX_NODES][MAX_NODES];
-};
+// struct distance_table {
+//   int costs[MAX_NODES][MAX_NODES];
+// };
 struct distance_table *dt2;
 struct NeighborCosts   *neighbor2;
 int minCosts[4];

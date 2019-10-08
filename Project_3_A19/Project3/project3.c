@@ -460,3 +460,55 @@ void   toLayer2( struct RoutePacket packet ) {
 float getClockTime(){
     return clocktime;
 }
+
+void findShortestPath(struct distance_table *dt, struct NeighborCosts *neighbors, struct RoutePacket *packet){
+    //given the source and destination nodes, find shortest path between by getting their neighbor costs. 
+    //update node 0 neighbor costs and distance table with new info
+
+    //this is based entirely off of the distance table!!!
+    //ex. node 0
+    int minCost = 9999;
+    int directCost = 0;
+    int cost = 0;
+    int i, j, k, m, n;
+
+    //cost directly from source to dest
+    directCost = neighbors->NodeCosts[packet->destid];
+    if(directCost < minCost){
+        minCost = directCost;
+        printf("Cost is: %d\n", minCost);
+        printf("Direct Path: %d, %d\n", packet->sourceid, packet->destid);
+    }
+
+    //source --> intermediate --> destination
+    for(i = 0; i < MAX_NODES; i++){
+        if(i != packet->sourceid && i != packet->destid){
+            cost = neighbors->NodeCosts[i] + dt->costs[i][packet->destid];
+            if(cost < minCost){
+                minCost = cost;
+                printf("Cost is: %d\n", minCost);
+                printf("One hop path: %d, %d, %d\n", packet->sourceid, i, 
+                    packet->destid);
+            }
+        }
+    }
+
+    //source --> intermediate --> intermediate --> destination
+
+    for(j = 0; j < MAX_NODES; j++){
+        if(j != packet->sourceid && j != packet->destid){
+            for(k = 0; k < MAX_NODES; k++){
+                if(k != packet->sourceid && k != packet->destid){
+                    cost = neighbors->NodeCosts[j] + dt->costs[j][k] + 
+                        dt->costs[k][packet->destid];
+                    if(cost < minCost){
+                        minCost = cost;
+                        printf("Cost is: %d\n", minCost);
+                        printf("Two hop path: %d, %d, %d, %d\n", 
+                            packet->sourceid, j, k, packet->destid);
+                    }
+                }
+            }
+        }
+    }
+}
