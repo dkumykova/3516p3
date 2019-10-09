@@ -13,7 +13,8 @@ struct NeighborCosts   *neighbor2;
 int minCosts[4];
 struct RoutePacket *previous;
 struct RoutePacket *current; 
-
+void printdt2( int MyNodeNumber, struct NeighborCosts *neighbor, 
+		struct distance_table *dtptr );
 /* students to write the following two routines, and maybe some others */
 
 void rtinit2() {
@@ -48,7 +49,7 @@ void rtinit2() {
         dt2->costs[ME][i] = neighbor2->NodeCosts[i];
         //minCosts[i] = neighbor2->NodeCosts[i];
     }
-    printdt0(ME, neighbor2, dt2);
+    printdt2(ME, neighbor2, dt2);
 
     //send information to neighbor nodes; call layer2 for each neighbor
     //neighbors of node 2: 0 1 3
@@ -99,7 +100,12 @@ void rtupdate2( struct RoutePacket *rcvdpkt ) {
         dt2->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
         if(previousRow[i] != rcvdpkt->mincost[i]){
             //new values! recalculate all paths
-
+            for(k = 0; k < MAX_NODES; k++){
+            for(p = 0; p < MAX_NODES; p++){
+                //printf("Source %d, Dest %d\n", k, p);
+                dt2->costs[k][p] = findShortestPath(dt2, k, p);
+            }
+        }
         }
        
 
@@ -120,24 +126,32 @@ void rtupdate2( struct RoutePacket *rcvdpkt ) {
             printf("\n");
             
         }
+    }
 
         for(k = 0; k < MAX_NODES; k++){
             for(p = 0; p < MAX_NODES; p++){
-                printf("Source %d, Dest %d\n", k, p);
+                //printf("Source %d, Dest %d\n", k, p);
                 dt2->costs[k][p] = findShortestPath(dt2, k, p);
             }
         }
-    }
+    
 
-    printf("Full distance table for node 2! after recalcs**!: \n");
-    int w, x;
-    for(w = 0; w < MAX_NODES; w++){
-        for(x = 0; x < MAX_NODES; x++){
-            printf("%d ",  dt2->costs[w][x]);
-        }
-        printf("\n");
+     printf("Full distance table for node 2! after recalcs**!: \n");
+     int w, x;
+     for(w = 0; w < MAX_NODES; w++){
+         for(x = 0; x < MAX_NODES; x++){
+             printf("%d ",  dt2->costs[w][x]);
+         }
+         printf("\n");
         
+     }
+    //int x;
+    for(x = 0; x < MAX_NODES; x++){
+        neighbor2->NodeCosts[x] = dt2->costs[ME][x];
+        printf("%d ",  neighbor2->NodeCosts[x]);
     }
+    printf("\n");
+    printdt2(ME, neighbor2, dt2);
 
 }
 

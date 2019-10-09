@@ -13,6 +13,8 @@ struct NeighborCosts   *neighbor3;
 int minCosts[4];
 struct RoutePacket *previous;
 struct RoutePacket *current; 
+void printdt3( int MyNodeNumber, struct NeighborCosts *neighbor, 
+		struct distance_table *dtptr );
 
 /* students to write the following two routines, and maybe some others */
 
@@ -48,7 +50,7 @@ void rtinit3() {
         dt3->costs[ME][i] = neighbor3->NodeCosts[i];
         //minCosts[i] = neighbor3->NodeCosts[i];
     }
-    printdt0(ME, neighbor3, dt3);
+    printdt3(ME, neighbor3, dt3);
 
     //send information to neighbor nodes; call layer2 for each neighbor
     //neighbors of node 3: 0 2
@@ -69,6 +71,10 @@ void rtinit3() {
     toLayer2(*packet);
     packet->destid = 2;
     printf("At time %f, node 3 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
+    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
+    toLayer2(*packet);
+    packet->destid = 1;
+    printf("At time %f, node 3 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
     neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
     toLayer2(*packet);
 }
@@ -96,7 +102,12 @@ void rtupdate3( struct RoutePacket *rcvdpkt ) {
         dt3->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
         if(previousRow[i] != rcvdpkt->mincost[i]){
             //new values! recalculate all paths
-
+            for(k = 0; k < MAX_NODES; k++){
+            for(p = 0; p < MAX_NODES; p++){
+                //printf("Source %d, Dest %d\n", k, p);
+                dt3->costs[k][p] = findShortestPath(dt3, k, p);
+            }
+        }
         }
        
 
@@ -116,25 +127,32 @@ void rtupdate3( struct RoutePacket *rcvdpkt ) {
             printf("\n");
             
         }
+    }
 
         for(k = 0; k < MAX_NODES; k++){
             for(p = 0; p < MAX_NODES; p++){
-                printf("Source %d, Dest %d\n", k, p);
+                //printf("Source %d, Dest %d\n", k, p);
                 dt3->costs[k][p] = findShortestPath(dt3, k, p);
             }
         }
-    }
+    
 
-    printf("Full distance table for node 3! after recalcs**!: \n");
-    int w, x;
-    for(w = 0; w < MAX_NODES; w++){
-        for(x = 0; x < MAX_NODES; x++){
-            printf("%d ",  dt3->costs[w][x]);
-        }
-        printf("\n");
-        
+     printf("Full distance table for node 3! after recalcs**!: \n");
+     int w, x;
+     for(w = 0; w < MAX_NODES; w++){
+         for(x = 0; x < MAX_NODES; x++){
+             printf("%d ",  dt3->costs[w][x]);
+         }
+         printf("\n");
+      
+     }
+    //int x;
+    for(x = 0; x < MAX_NODES; x++){
+        neighbor3->NodeCosts[x] = dt3->costs[ME][x];
+        printf("%d ",  neighbor3->NodeCosts[x]);
     }
-
+    printf("\n");
+    printdt3(ME, neighbor3, dt3);
 }
 
 
