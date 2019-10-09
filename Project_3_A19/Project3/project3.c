@@ -482,7 +482,7 @@ int findShortestPath(struct distance_table *dt, int source, int dest){
 
     //source --> intermediate --> destination
     for(i = 0; i < MAX_NODES; i++){
-        if(i != source && i != dest && dt->costs[source][i] != 9999){
+        if(i != source && i != dest){
             cost = dt->costs[source][i] + dt->costs[i][dest]; // + neighbors->NodeCosts[i]
             //printf("One hop Cost is: %d\n", cost);
             if(cost < minCost){
@@ -496,14 +496,14 @@ int findShortestPath(struct distance_table *dt, int source, int dest){
     //source --> intermediate --> intermediate --> destination
 
     for(j = 0; j < MAX_NODES; j++){
-        if(j != source && j != dest && dt->costs[source][j] != 9999){
+        if(j != source && j != dest){
             for(k = 0; k < MAX_NODES; k++){
-                if(k != source && k != dest && dt->costs[j][k] != 9999 && dt->costs[k][dest] != 9999){
+                if(k != source && k != dest){
                     cost = dt->costs[source][j] + dt->costs[j][k] + dt->costs[k][dest]; //+ neighbors->NodeCosts[j]
-                    printf("Two hop Cost is: %d\n", cost);
+                    //printf("Two hop Cost is: %d\n", cost);
                     if(cost < minCost){
                         minCost = cost;
-                        printf("Two hop path: %d, %d, %d, %d\n", source, j, k, dest);
+                       // printf("Two hop path: %d, %d, %d, %d\n", source, j, k, dest);
                         method = 3;
                     }
                 }

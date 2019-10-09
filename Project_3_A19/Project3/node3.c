@@ -73,46 +73,33 @@ void rtinit3() {
     printf("At time %f, node 3 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
     neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
     toLayer2(*packet);
-    packet->destid = 1;
-    printf("At time %f, node 3 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
-    toLayer2(*packet);
+
+   
 }
 
 
 void rtupdate3( struct RoutePacket *rcvdpkt ) {
-    if(TraceLevel == 1){
-        printf("Node 3 received a new packet!\n");
-        printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
-    }
+    //if(TraceLevel == 1){
+        printf("Node 3 received a new packet from %d with values: ", rcvdpkt->sourceid);
+        //printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
+    //}
     
     int i, j, k, p;
 
     int previousRow[4];
-    printf("Value of distance vector for %d before update: ", rcvdpkt->sourceid);
+    //printf("Value of distance vector for %d before update: ", rcvdpkt->sourceid);
     for(j = 0; j < MAX_NODES; j++){
         previousRow[j] = dt3->costs[rcvdpkt->sourceid][j];
-        printf("%d, ", dt3->costs[rcvdpkt->sourceid][j]);
+        printf("%d, ", rcvdpkt->mincost[j]);
     }
     printf("\n");
 
     for(i = 0; i < 4; i++){
-        printf("%d, ", rcvdpkt->mincost[i]);
-        
+        //printf("%d, ", rcvdpkt->mincost[i]);
         dt3->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
-        if(previousRow[i] != rcvdpkt->mincost[i]){
-            //new values! recalculate all paths
-            for(k = 0; k < MAX_NODES; k++){
-            for(p = 0; p < MAX_NODES; p++){
-                //printf("Source %d, Dest %d\n", k, p);
-                dt3->costs[k][p] = findShortestPath(dt3, k, p);
-            }
-        }
-        }
-       
-
+        
     }
-    printf("\n");
+    //printf("\n");
 
 
     // printf("Reprinting node 0 distance table post update:\n");
@@ -133,25 +120,18 @@ void rtupdate3( struct RoutePacket *rcvdpkt ) {
             for(p = 0; p < MAX_NODES; p++){
                 //printf("Source %d, Dest %d\n", k, p);
                 dt3->costs[k][p] = findShortestPath(dt3, k, p);
+                dt3->costs[p][k] = findShortestPath(dt3, k, p);
             }
         }
     
 
-     printf("Full distance table for node 3! after recalcs**!: \n");
-     int w, x;
-     for(w = 0; w < MAX_NODES; w++){
-         for(x = 0; x < MAX_NODES; x++){
-             printf("%d ",  dt3->costs[w][x]);
-         }
-         printf("\n");
-      
-     }
-    //int x;
+    int x;
     for(x = 0; x < MAX_NODES; x++){
         neighbor3->NodeCosts[x] = dt3->costs[ME][x];
-        printf("%d ",  neighbor3->NodeCosts[x]);
+        //printf("%d ",  neighbor3->NodeCosts[x]);
     }
-    printf("\n");
+    //printf("\n");
+    
     printdt3(ME, neighbor3, dt3);
 }
 
