@@ -65,17 +65,29 @@ void rtinit2() {
       //  printf("%d, ", minCosts[m]);
         packet->mincost[m] = neighbor2->NodeCosts[m];
     }
-    printf("At time %f, node 2 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
-    toLayer2(*packet);
-    packet->destid = 1;
-    printf("At time %f, node 2 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
-    toLayer2(*packet);
-    packet->destid = 3;
-    printf("At time %f, node 2 sends packet to node 3 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
-    toLayer2(*packet);
+
+    for(k = 0; k < MAX_NODES; k++){
+        if(neighbor2->NodeCosts[k] == INFINITY){
+            //do nothing
+        } else {
+            packet->destid = k;
+            printf("At time %f, node 0 sends packet to node %d with: %d, %d, %d, %d\n", getClockTime(), k, 
+            neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
+            toLayer2(*packet);
+        }
+    }
+
+    // printf("At time %f, node 2 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
+    // neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
+    // toLayer2(*packet);
+    // packet->destid = 1;
+    // printf("At time %f, node 2 sends packet to node 1 with: %d, %d, %d, %d\n", getClockTime(), 
+    // neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
+    // toLayer2(*packet);
+    // packet->destid = 3;
+    // printf("At time %f, node 2 sends packet to node 3 with: %d, %d, %d, %d\n", getClockTime(), 
+    // neighbor2->NodeCosts[0], neighbor2->NodeCosts[1], neighbor2->NodeCosts[2], neighbor2->NodeCosts[3]);
+    // toLayer2(*packet);
 }
 
 

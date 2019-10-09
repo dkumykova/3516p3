@@ -66,13 +66,24 @@ void rtinit3() {
       //  printf("%d, ", minCosts[m]);
         packet->mincost[m] = neighbor3->NodeCosts[m];
     }
-    printf("At time %f, node 3 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
-    toLayer2(*packet);
-    packet->destid = 2;
-    printf("At time %f, node 3 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
-    neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
-    toLayer2(*packet);
+
+    for(k = 0; k < MAX_NODES; k++){
+        if(neighbor3->NodeCosts[k] == INFINITY){
+            //do nothing
+        } else {
+            packet->destid = k;
+            printf("At time %f, node 0 sends packet to node %d with: %d, %d, %d, %d\n", getClockTime(), k, 
+            neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
+            toLayer2(*packet);
+        }
+    }
+    // printf("At time %f, node 3 sends packet to node 0 with: %d, %d, %d, %d\n", getClockTime(), 
+    // neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
+    // toLayer2(*packet);
+    // packet->destid = 2;
+    // printf("At time %f, node 3 sends packet to node 2 with: %d, %d, %d, %d\n", getClockTime(), 
+    // neighbor3->NodeCosts[0], neighbor3->NodeCosts[1], neighbor3->NodeCosts[2], neighbor3->NodeCosts[3]);
+    // toLayer2(*packet);
 
    
 }
