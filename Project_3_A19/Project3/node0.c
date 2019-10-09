@@ -88,17 +88,17 @@ void rtinit0() {
 
 void rtupdate0( struct RoutePacket *rcvdpkt ) {
     //format of mincosts is, based on source, to node 0,1,2,3
-    printf("Node 0 received a new packet!\n");
+    if(TraceLevel == 1){
+        printf("Node 0 received a new packet!\n");
+        printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
+    }
 
     //print out values of the new mincosts
     //copy received packet to current to be processed
     //udpdate the node distance table to reflect info; by the end of the session, each node should have the 
     //same distance table with minimized costs, but they won't be printed the same which is annoying
 
-    current->sourceid = rcvdpkt->sourceid;
-    current->destid = rcvdpkt->destid;
-    printf("neighbor %d mincosts: ", rcvdpkt->sourceid);
-    int i, j;
+    int i, j, k, p;
 
     int previousRow[4];
     printf("Value of distance vector for %d before update: ", rcvdpkt->sourceid);
@@ -114,75 +114,43 @@ void rtupdate0( struct RoutePacket *rcvdpkt ) {
         dt0->costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
         if(previousRow[i] != rcvdpkt->mincost[i]){
             //new values! recalculate all paths
-
+            // for(k = 0; k < MAX_NODES; k++){
+            //     for(p = 0; p < MAX_NODES; p++){
+            //         dt0->costs[k][p] = findShortestPath(dt0, neighbor0, k, p);
+            //     }
+            // }
         }
-        //if any of these are different, then need to re calculate shortest path to each node
-        //change the neighborCosts, not the distance table!
-        
-            //calculate shortest path for each neighbor, so for node 0:
-            //find new mincost for neighbor i!
-            
-            /**
-             * 
-             * For source A to destination B, get minCost (A, B):
-                1. get neighbors of A.
-                2. get minCost of neighbor 1 of A. Add to totalCost
-                    a. if neighbor 1 = destination and totalCost < bestCost, store as new bestCost.
-                        else, bestCost stays the same.
-                    b. repeat for all neighbors of A.
-                    c. output the minCost from A to B.
-             * NO LOOPS! need to keep track of nodes visited
-             * keep track of current cost and previous best cost; if
-             * route starts having a route greater than previous cost, drop that route
-             * 
-             * Dest: 1
-             * 0-->1
-             * 0-->2-->1
-             * 0-->3-->2-->1
-             * Dest: 2
-             * 0-->2
-             * 0-->1-->2
-             * 0-->3-->2
-             * Dest: 3
-             * 0-->3
-             * 0-->1-->2-->3
-             * 0-->2-->3
-             * */
-            //Dx(y) = min { C(x,v) + Dv(y)} for each node y ∈ N
+       
 
-        
-
-        // if(dt0->costs[rcvdpkt->sourceid][i] != rcvdpkt->mincost[i]){
-        //     printf("mincost of neigbor %d to their neighbor %d changed\n", rcvdpkt->sourceid, i);
-        //     //recalculate all paths?
-        //     findShortestPath(ME, 1);
-        //     findShortestPath(ME, 2);
-        //     findShortestPath(ME, 3);
-        // }
     }
     printf("\n");
 
-    
-    //check if the distance is different to what is expected; if so, recalculate mincosts
-
-    //at the end of all processing, make current the previous one
-
-    // previous->sourceid = current->sourceid;
-    // previous->destid = current->destid;
-    // int k;
-    // for (k = 0; k < 4; k++)
-    // {
-    //     previous->mincost[k] = current->mincost[k];
-    // }
-    findShortestPath(dt0, neighbor0, rcvdpkt);
-
     // printf("Reprinting node 0 distance table post update:\n");
     // printdt0(ME, neighbor0, dt0);
-    printf("Full distance table for node 0!: \n");
-    int m, n;
-    for(m = 0; m < MAX_NODES; m++){
-        for(n = 0; n < MAX_NODES; n++){
-            printf("%d ",  dt0->costs[m][n]);
+    if(TraceLevel == 1){
+        printf("Full distance table for node 0! before any recalcs!: \n");
+        int m, n;
+        for(m = 0; m < MAX_NODES; m++){
+            for(n = 0; n < MAX_NODES; n++){
+                printf("%d ",  dt0->costs[m][n]);
+            }
+            printf("\n");
+            
+        }
+
+        for(k = 0; k < MAX_NODES; k++){
+            for(p = 0; p < MAX_NODES; p++){
+                printf("Source %d, Dest %d\n", k, p);
+                dt0->costs[k][p] = findShortestPath(dt0, k, p);
+            }
+        }
+    }
+
+    printf("Full distance table for node 0! after recalcs**!: \n");
+    int w, x;
+    for(w = 0; w < MAX_NODES; w++){
+        for(x = 0; x < MAX_NODES; x++){
+            printf("%d ",  dt0->costs[w][x]);
         }
         printf("\n");
         

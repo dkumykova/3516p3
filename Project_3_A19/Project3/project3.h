@@ -46,4 +46,4 @@ struct distance_table {
 void toLayer2( struct RoutePacket packet );
 struct NeighborCosts *getNeighborCosts(int myNodeNumber);
 float getClockTime();
-void findShortestPath(struct distance_table *dt, struct NeighborCosts *neighbors, struct RoutePacket *packet);
+int findShortestPath(struct distance_table *dt, int source, int dest);

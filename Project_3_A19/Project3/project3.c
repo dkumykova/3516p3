@@ -461,34 +461,34 @@ float getClockTime(){
     return clocktime;
 }
 
-void findShortestPath(struct distance_table *dt, struct NeighborCosts *neighbors, struct RoutePacket *packet){
+int findShortestPath(struct distance_table *dt, int source, int dest){
     //given the source and destination nodes, find shortest path between by getting their neighbor costs. 
     //update node 0 neighbor costs and distance table with new info
 
     //this is based entirely off of the distance table!!!
     //ex. node 0
     int minCost = 9999;
-    int directCost = 0;
     int cost = 0;
     int i, j, k, m, n;
-
+    int method = 0;
     //cost directly from source to dest
-    directCost = neighbors->NodeCosts[packet->destid];
-    if(directCost < minCost){
-        minCost = directCost;
-        printf("Cost is: %d\n", minCost);
-        printf("Direct Path: %d, %d\n", packet->sourceid, packet->destid);
+    cost = dt->costs[source][dest];//neighbors->NodeCosts[dest];
+    //printf("Direct Cost is: %d\n", directCost);
+    if(cost < minCost){
+        minCost = cost;
+       // printf("Direct Path: %d, %d\n", source, dest);
+        method = 1;
     }
 
     //source --> intermediate --> destination
     for(i = 0; i < MAX_NODES; i++){
-        if(i != packet->sourceid && i != packet->destid){
-            cost = neighbors->NodeCosts[i] + dt->costs[i][packet->destid];
+        if(i != source && i != dest){
+            cost = dt->costs[source][i] + dt->costs[i][dest]; // + neighbors->NodeCosts[i]
+            //printf("One hop Cost is: %d\n", cost);
             if(cost < minCost){
                 minCost = cost;
-                printf("Cost is: %d\n", minCost);
-                printf("One hop path: %d, %d, %d\n", packet->sourceid, i, 
-                    packet->destid);
+               // printf("One hop path: %d, %d, %d\n", source, i, dest);
+                method = 2;
             }
         }
     }
@@ -496,19 +496,20 @@ void findShortestPath(struct distance_table *dt, struct NeighborCosts *neighbors
     //source --> intermediate --> intermediate --> destination
 
     for(j = 0; j < MAX_NODES; j++){
-        if(j != packet->sourceid && j != packet->destid){
+        if(j != source && j != dest){
             for(k = 0; k < MAX_NODES; k++){
-                if(k != packet->sourceid && k != packet->destid){
-                    cost = neighbors->NodeCosts[j] + dt->costs[j][k] + 
-                        dt->costs[k][packet->destid];
+                if(k != source && k != dest){
+                    cost = dt->costs[source][j] + dt->costs[j][k] + dt->costs[k][dest]; //+ neighbors->NodeCosts[j]
+                   // printf("Two hop Cost is: %d\n", cost);
                     if(cost < minCost){
                         minCost = cost;
-                        printf("Cost is: %d\n", minCost);
-                        printf("Two hop path: %d, %d, %d, %d\n", 
-                            packet->sourceid, j, k, packet->destid);
+                     //   printf("Two hop path: %d, %d, %d, %d\n", source, j, k, dest);
+                        method = 3;
                     }
                 }
             }
         }
     }
+    //printf("Method we went with: %d\n", method);
+    return minCost;
 }
